@@ -50,7 +50,7 @@ fn fibonacci(input: FibonacciInput) -> AppResult<CalculationResult> {
         b = next;
     }
     Ok(CalculationResult::Fibonacci {
-        value: a.to_str_radix(10),
+        number: a.to_str_radix(10),
     })
 }
 

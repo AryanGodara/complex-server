@@ -31,9 +31,9 @@ pub struct SleepInput {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "kind", content = "value", rename_all = "snake_case")]
+#[serde(tag = "kind", rename_all = "snake_case")]
 pub enum CalculationResult {
-    Fibonacci { value: String },
+    Fibonacci { number: String },
     PrimeFactors { factors: Vec<u64> },
     MatrixMultiply { matrix: Vec<Vec<f64>> },
     Sleep { slept_ms: u64 },
