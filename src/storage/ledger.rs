@@ -130,7 +130,7 @@ impl JobLedger {
             id: Uuid::parse_str(&id_str)
                 .map_err(|e| AppError::Internal(format!("bad uuid in db: {e}")))?,
             calculation,
-            status: JobStatus::from_str(&status_str)
+            status: JobStatus::parse(&status_str)
                 .ok_or_else(|| AppError::Internal(format!("bad status: {status_str}")))?,
             created_at: millis_to_utc(created_at)?,
             started_at: started_at.map(millis_to_utc).transpose()?,

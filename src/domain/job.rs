@@ -23,7 +23,7 @@ impl JobStatus {
         }
     }
 
-    pub fn from_str(value: &str) -> Option<Self> {
+    pub fn parse(value: &str) -> Option<Self> {
         match value {
             "queued" => Some(JobStatus::Queued),
             "running" => Some(JobStatus::Running),

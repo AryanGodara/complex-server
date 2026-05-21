@@ -67,7 +67,7 @@ fn prime_factors(input: PrimeFactorsInput) -> AppResult<CalculationResult> {
     let mut factors = Vec::new();
     let mut d: u64 = 2;
     while d.saturating_mul(d) <= n {
-        while n.is_multiple_of(d) {
+        while n % d == 0 {
             factors.push(d);
             n /= d;
         }
