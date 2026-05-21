@@ -1,0 +1,16 @@
+[server]
+bind = "0.0.0.0:8080"
+
+[database]
+url = "sqlite://data/ledger.db?mode=rwc"
+
+[redis]
+url = "redis://127.0.0.1:6379"
+pool_size = 16
+queue_key = "complex-server:queue"
+result_prefix = "complex-server:result:"
+result_ttl_seconds = 3600
+
+[worker]
+concurrency = 4
+shutdown_grace_seconds = 30
