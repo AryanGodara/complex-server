@@ -28,9 +28,10 @@ impl JobLedger {
             .connect_with(opts)
             .await?;
 
-        sqlx::migrate!("./migrations").run(&pool).await.map_err(|e| {
-            AppError::Internal(format!("migration failed: {e}"))
-        })?;
+        sqlx::migrate!("./migrations")
+            .run(&pool)
+            .await
+            .map_err(|e| AppError::Internal(format!("migration failed: {e}")))?;
 
         Ok(Self { pool })
     }
@@ -64,11 +65,7 @@ impl JobLedger {
         Ok(())
     }
 
-    pub async fn mark_completed(
-        &self,
-        id: Uuid,
-        result: &CalculationResult,
-    ) -> AppResult<()> {
+    pub async fn mark_completed(&self, id: Uuid, result: &CalculationResult) -> AppResult<()> {
         let now = Utc::now().timestamp_millis();
         let result_json = serde_json::to_string(result)?;
         sqlx::query(

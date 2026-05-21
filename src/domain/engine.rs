@@ -17,12 +17,8 @@ const MAX_SLEEP_MS: u64 = 60_000;
 pub async fn execute(calculation: Calculation) -> AppResult<CalculationResult> {
     match calculation {
         Calculation::Fibonacci(input) => run_blocking(move || fibonacci(input)).await,
-        Calculation::PrimeFactors(input) => {
-            run_blocking(move || prime_factors(input)).await
-        }
-        Calculation::MatrixMultiply(input) => {
-            run_blocking(move || matrix_multiply(input)).await
-        }
+        Calculation::PrimeFactors(input) => run_blocking(move || prime_factors(input)).await,
+        Calculation::MatrixMultiply(input) => run_blocking(move || matrix_multiply(input)).await,
         Calculation::Sleep(input) => sleep(input).await,
     }
 }

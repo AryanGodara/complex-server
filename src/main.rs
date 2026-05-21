@@ -28,8 +28,8 @@ async fn main() -> anyhow::Result<()> {
         .await
         .context("connecting to sqlite")?;
 
-    let redis_pool = build_pool(&cfg.redis.url, cfg.redis.pool_size)
-        .context("creating redis pool")?;
+    let redis_pool =
+        build_pool(&cfg.redis.url, cfg.redis.pool_size).context("creating redis pool")?;
 
     let queue = JobQueue::new(redis_pool.clone(), cfg.redis.queue_key.clone());
     let cache = ResultCache::new(

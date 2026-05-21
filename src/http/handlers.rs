@@ -58,7 +58,9 @@ pub async fn wait_job(
         return Ok(Json(job));
     }
 
-    let timed_out = tokio::time::timeout(timeout, notify.notified()).await.is_err();
+    let timed_out = tokio::time::timeout(timeout, notify.notified())
+        .await
+        .is_err();
     let job = load_job(&state, id).await?;
     if job.status.is_terminal() {
         Ok(Json(job))

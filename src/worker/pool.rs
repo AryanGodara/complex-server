@@ -21,7 +21,11 @@ pub struct WorkerDeps {
     pub waiters: WaiterRegistry,
 }
 
-pub fn spawn(deps: WorkerDeps, concurrency: usize, cancel: CancellationToken) -> Vec<JoinHandle<()>> {
+pub fn spawn(
+    deps: WorkerDeps,
+    concurrency: usize,
+    cancel: CancellationToken,
+) -> Vec<JoinHandle<()>> {
     (0..concurrency)
         .map(|worker_id| {
             let deps = deps.clone();

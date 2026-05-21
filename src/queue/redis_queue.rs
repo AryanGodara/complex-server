@@ -25,9 +25,8 @@ impl JobQueue {
 
     pub async fn pop_blocking(&self, timeout: Duration) -> AppResult<Option<Uuid>> {
         let mut conn = self.pool.get().await?;
-        let result: Option<(String, String)> = conn
-            .brpop(&self.queue_key, timeout.as_secs_f64())
-            .await?;
+        let result: Option<(String, String)> =
+            conn.brpop(&self.queue_key, timeout.as_secs_f64()).await?;
         match result {
             Some((_, id)) => Uuid::parse_str(&id)
                 .map(Some)

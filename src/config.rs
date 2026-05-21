@@ -37,8 +37,8 @@ pub struct WorkerConfig {
 
 impl AppConfig {
     pub fn load() -> anyhow::Result<Self> {
-        let path = env::var("COMPLEX_SERVER_CONFIG")
-            .unwrap_or_else(|_| "config/default.toml".to_string());
+        let path =
+            env::var("COMPLEX_SERVER_CONFIG").unwrap_or_else(|_| "config/default.toml".to_string());
         let raw = fs::read_to_string(Path::new(&path))?;
         let mut cfg: AppConfig = toml::from_str(&raw)?;
         cfg.apply_env_overrides();

@@ -1,8 +1,8 @@
 use std::time::Duration;
 
 use axum::Router;
-use axum::routing::{get, post};
 use axum::http::StatusCode;
+use axum::routing::{get, post};
 use tower_http::timeout::TimeoutLayer;
 use tower_http::trace::TraceLayer;
 
