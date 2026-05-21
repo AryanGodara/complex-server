@@ -11,3 +11,5 @@
 .DS_Store
 *.log
 /.claude
+dump.rdb
+*.rdb
