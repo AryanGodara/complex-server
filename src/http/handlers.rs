@@ -6,7 +6,7 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use uuid::Uuid;
 
-use crate::domain::job::{Job, JobStatus};
+use crate::domain::job::Job;
 use crate::error::{AppError, AppResult};
 use crate::http::dto::{HealthResponse, SubmitRequest, SubmitResponse, WaitParams};
 use crate::state::AppState;
@@ -50,7 +50,7 @@ pub async fn wait_job(
     Path(id): Path<Uuid>,
     Query(params): Query<WaitParams>,
 ) -> AppResult<impl IntoResponse> {
-    let timeout_ms = params.timeout_ms.min(MAX_WAIT_MS);
+    let timeout = Duration::from_millis(params.timeout_ms.min(MAX_WAIT_MS));
     let notify = state.waiters.handle(id);
 
     let job = load_job(&state, id).await?;
@@ -58,27 +58,14 @@ pub async fn wait_job(
         return Ok(Json(job));
     }
 
-    let timeout = Duration::from_millis(timeout_ms);
-    let notified = notify.notified();
-    match tokio::time::timeout(timeout, notified).await {
-        Ok(()) => {
-            let job = load_job(&state, id).await?;
-            if job.status.is_terminal() {
-                Ok(Json(job))
-            } else {
-                Err(AppError::Internal(
-                    "notified but job not terminal".into(),
-                ))
-            }
-        }
-        Err(_) => {
-            let job = load_job(&state, id).await?;
-            if job.status.is_terminal() {
-                Ok(Json(job))
-            } else {
-                Err(AppError::WaitTimeout)
-            }
-        }
+    let timed_out = tokio::time::timeout(timeout, notify.notified()).await.is_err();
+    let job = load_job(&state, id).await?;
+    if job.status.is_terminal() {
+        Ok(Json(job))
+    } else if timed_out {
+        Err(AppError::WaitTimeout)
+    } else {
+        Err(AppError::Internal("notified but job not terminal".into()))
     }
 }
 
@@ -90,7 +77,7 @@ async fn load_job(state: &AppState, id: Uuid) -> AppResult<Job> {
     }
     match state.ledger.get(id).await? {
         Some(job) => {
-            if matches!(job.status, JobStatus::Completed | JobStatus::Failed) {
+            if job.status.is_terminal() {
                 let _ = state.cache.put(&job).await;
             }
             Ok(job)

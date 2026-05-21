@@ -38,7 +38,7 @@ impl From<deadpool_redis::PoolError> for AppError {
 }
 
 impl AppError {
-    pub fn status(&self) -> StatusCode {
+    fn status(&self) -> StatusCode {
         match self {
             AppError::JobNotFound(_) => StatusCode::NOT_FOUND,
             AppError::BadRequest(_) => StatusCode::BAD_REQUEST,
